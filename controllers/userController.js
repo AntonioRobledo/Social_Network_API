@@ -37,36 +37,47 @@ module.exports = {
 // Update a user
   async updateUser(req, res) {
     try { 
-      const user = await User.findOneAndUpdate()
-    }
-  }
-
-  // Delete a course
-  async deleteCourse(req, res) {
-    try {
-      const course = await Course.findOneAndDelete({ _id: req.params.courseId });
-
-      if (!course) {
-        return res.status(404).json({ message: 'No course with that ID' });
+      const user = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $set: req.body },
+        { runValidators: true, new: true }
+      );
+      if (!user) {
+        return res.status(404).json({ message: 'User ID was not found'});
       }
 
-      await Student.deleteMany({ _id: { $in: course.students } });
-      res.json({ message: 'Course and students deleted!' });
+      res.json(user);
     } catch (err) {
       res.status(500).json(err);
     }
   },
-  // Update a course
-  async updateCourse(req, res) {
+
+  // Delete a user 
+  async deleteUser(req, res) {
     try {
-      const course = await Course.findOneAndUpdate(
-        { _id: req.params.courseId },
-        { $set: req.body },
+      const user = await User.findOneAndDelete({ _id: req.params.userId });
+
+      if (!user) {
+        return res.status(404).json({ message: 'User ID was not found' });
+      }
+
+      await Thought.deleteMany({ _id: { $in: user.thoughts } });
+      res.json({ message: 'User and their associated thoughts have successfully been deleted' });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+  // Add a friend 
+  async addFriend(req, res) {
+    try {
+      const friend = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $addToSet: {friends: req.params.friendId} },
         { runValidators: true, new: true }
       );
 
-      if (!course) {
-        return res.status(404).json({ message: 'No course with this id!' });
+      if (!friend) {
+        return res.status(404).json({ message: 'User ID was not found' });
       }
 
       res.json(course);
@@ -74,4 +85,20 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+  // Delete a friend 
+  async deleteFriend (req, res) {
+    try {
+      const friend = await User.findOneAndDelete({_id: req.params.userId});
+
+      if (!friend) {
+        return res.status(404).json({ message: 'Friend ID was not found' });
+      }
+
+      await Thought.deleteMany({ _id: { $in: user.thoughts } });
+      res.json({ message: 'Friend ID was not found' })
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
 };
+
