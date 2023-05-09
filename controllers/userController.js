@@ -1,40 +1,46 @@
-const { Course, Student } = require('../models');
+const { User, Thought } = require('../models');
 
 module.exports = {
-  // Get all courses
-  async getCourses(req, res) {
+  // Get all users
+  async getAllUsers(req, res) {
     try {
-      const courses = await Course.find();
-      res.json(courses);
+      const user = await User.find();
+      res.json(user);
     } catch (err) {
       res.status(500).json(err);
     }
   },
-  // Get a course
-  async getSingleCourse(req, res) {
+  // Get a single user
+  async getSingleUser(req, res) {
     try {
-      const course = await Course.findOne({ _id: req.params.courseId })
+      const user = await User.findOne({ _id: req.params.userId })
         .select('-__v');
 
-      if (!course) {
-        return res.status(404).json({ message: 'No course with that ID' });
+      if (!user) {
+        return res.status(404).json({ message: 'User ID was not found' });
       }
 
-      res.json(course);
+      res.json(user);
     } catch (err) {
       res.status(500).json(err);
     }
   },
-  // Create a course
-  async createCourse(req, res) {
+  // Create a new user
+  async createUser(req, res) {
     try {
-      const course = await Course.create(req.body);
-      res.json(course);
+      const user = await User.create(req.body);
+      res.json(user);
     } catch (err) {
-      console.log(err);
-      return res.status(500).json(err);
+      res.status(500).json(err);
     }
   },
+// Update a user
+  async updateUser(req, res) {
+    try { 
+      const user = await User.findOneAndUpdate()
+    }
+  }
+
   // Delete a course
   async deleteCourse(req, res) {
     try {
