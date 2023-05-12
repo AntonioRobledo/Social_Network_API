@@ -82,7 +82,7 @@ async updateThought(req, res) {
 
       if(!user) {
         return res.status(404).json({
-          message: 'Thought has been created but no user with that ID was found'
+          message: 'Thought has been successfully deleted'
         });
       }
 
