@@ -115,14 +115,14 @@ async updateThought(req, res) {
       const reaction = await Thought.findOneAndUpdate(
         { _id: req.params.thoughtId },
         { $pull: { reactions: { reactionId: req.params.reactionId } } },
-        { runValidators: true, new: true }
+        { new: true }
       );
 
       if (!reaction) {
         return res.status(404).json({ message: 'No thought with this ID was found'});
       }
 
-      res.json(thought);
+      res.json({ message: 'Reaction has been removed'});
     } catch (err) {
       res.status(500).json(err);
     }

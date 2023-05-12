@@ -80,7 +80,7 @@ module.exports = {
         return res.status(404).json({ message: 'User ID was not found' });
       }
 
-      res.json(course);
+      res.json(friend);
     } catch (err) {
       res.status(500).json(err);
     }
@@ -88,14 +88,17 @@ module.exports = {
   // Delete a friend 
   async deleteFriend (req, res) {
     try {
-      const friend = await User.findOneAndDelete({_id: req.params.userId});
+      const friend = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $pull: {friends: req.params.friendId } },
+        { new: true },
+        );
 
       if (!friend) {
         return res.status(404).json({ message: 'Friend ID was not found' });
       }
 
-      await Thought.deleteMany({ _id: { $in: user.thoughts } });
-      res.json({ message: 'Friend ID was not found' })
+      res.json({ message: 'Friend has been removed' })
     } catch (err) {
       res.status(500).json(err);
     }
